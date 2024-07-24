@@ -1,0 +1,5 @@
+[user]
+	name = Yasser Nascimento
+	email = dev@yasser.email
+[core]
+	excludesFile = ~/.config/git/ignore
