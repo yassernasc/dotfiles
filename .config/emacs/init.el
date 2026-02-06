@@ -1,3 +1,7 @@
+;; GNU Emacs 31.0.50
+
+;;; -*- lexical-binding: t -*-
+
 ;; clean screen
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -79,7 +83,8 @@
 
 ;; code format
 (use-package apheleia
-  :init (apheleia-global-mode +1))
+  :init
+  (apheleia-global-mode +1))
 
 ;; minibuffer enhancement
 (use-package vertico
@@ -120,22 +125,33 @@
   :custom
   ((consult-find-args "find . -not ( -wholename */.* -prune -o -name node_modules -prune )")))
 
-;; enable ide-like features
+;; tree-sitter syntax highlight
+(add-to-list 'auto-mode-alist '("\\.sh$" . bash-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.c$" . c-ts-mode))
+(add-to-list 'auto-mode-alist '("CMakeLists.txt" . cmake-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cc$" . c++-ts-mode))
+(add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cjs$" . js-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.js$" . js-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . json-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.mjs$" . js-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.toml$" . toml-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ts$" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-ts-mode))
+
+;; ide-like features
 (use-package eglot
   :ensure nil
   :hook
-  ((css-ts-mode go-ts-mode js-ts-mode json-ts-mode tsx-ts-mode typescript-ts-mode) . eglot-ensure))
-
-;; ensure tree-sitter
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install 'prompt)
+  ((bash-ts-mode cmake-ts-mode js-ts-mode json-ts-mode typescript-ts-mode) . eglot-ensure)
   :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
+  (setq eglot-ignored-server-capabilites '(:codeActionProvider)))
 
-;; config langs
+(use-package eldoc-box
+  :hook (eglot-managed-mode . eldoc-box-hover-mode))
+
+;; language specific
 (use-package js
   :ensure nil
-  :custom
-  (js-indent-level 2))
+  :custom (js-indent-level 2))
